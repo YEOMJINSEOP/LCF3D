@@ -79,13 +79,13 @@ def main(args):
         pbar = tqdm(total=len(train_dataset_loader))
         time.sleep(10)
         # lr_scheduler.step(epoch)
-        for i_iter, (_, train_vox_label, train_grid, _, train_pt_fea) in enumerate(train_dataset_loader):
+        for i_iter, (corresponding_img, train_vox_label, train_grid, _, train_pt_fea) in enumerate(train_dataset_loader):
             if global_iter % check_iter == 0 and epoch >= 1:
                 my_model.eval()
                 hist_list = []
                 val_loss_list = []
                 with torch.no_grad():
-                    for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
+                    for i_iter_val, (corresponding_img, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                             val_dataset_loader):
 
                         val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in

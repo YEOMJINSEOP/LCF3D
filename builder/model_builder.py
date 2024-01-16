@@ -15,6 +15,8 @@ def build(model_config):
     init_size = model_config['init_size'] # 32
     fea_dim = model_config['fea_dim'] # 9
     out_fea_dim = model_config['out_fea_dim'] # 256
+    
+    img_fea_dim = model_config['img_fea_dim'] # 3    
 
     cylinder_3d_spconv_seg = Asymm_3d_spconv(
         output_shape=output_shape, # [480, 360, 32]
@@ -22,13 +24,14 @@ def build(model_config):
         num_input_features=num_input_features, # 16
         init_size=init_size, # 32
         nclasses=num_class # 20
-        )
-
+    )
+ 
     cy_fea_net = cylinder_fea(
                               grid_size=output_shape, # [480, 360, 32]
                               fea_dim=fea_dim, # 9
                               out_pt_fea_dim=out_fea_dim, # 256
-                              fea_compre=num_input_features # 16 
+                              fea_compre=num_input_features, # 16 
+                              img_fea_dim=img_fea_dim
                               )
 
     model = get_model_class(model_config["model_architecture"])(

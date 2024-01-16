@@ -15,6 +15,7 @@ model_params = Map(
         "num_input_features": Int(),
         "use_norm": Bool(),
         "init_size": Int(),
+        "img_fea_dim": Int()
     }
 )
 

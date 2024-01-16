@@ -13,13 +13,15 @@ import torch_scatter
 class cylinder_fea(nn.Module):
 
     def __init__(self, grid_size, fea_dim=3,
-                 out_pt_fea_dim=64, max_pt_per_encode=64, fea_compre=None):
+                 out_pt_fea_dim=64, max_pt_per_encode=64, fea_compre=None, img_fea_dim=3):
         super(cylinder_fea, self).__init__()
 
+        fused_fea_dim = fea_dim + img_fea_dim
+        
         self.PPmodel = nn.Sequential(
-            nn.BatchNorm1d(fea_dim),
+            nn.BatchNorm1d(fused_fea_dim),
 
-            nn.Linear(fea_dim, 64),
+            nn.Linear(fused_fea_dim, 64),
             nn.BatchNorm1d(64),
             nn.ReLU(),
 
@@ -52,7 +54,8 @@ class cylinder_fea(nn.Module):
         else: # fea_compre = num_input_features = 16
             self.pt_fea_dim = self.pool_dim
 
-    def forward(self, pt_fea, xy_ind):
+    def forward(self, pt_fea, xy_ind, img_fea=None):
+        print(f'\n len(pt_fea): {len(pt_fea)}\n')
         # pt_fea[0]: [num pts, 9]
         # xy_ind[0]: [num pts, 3]
         cur_dev = pt_fea[0].get_device() 
@@ -61,24 +64,32 @@ class cylinder_fea(nn.Module):
         cat_pt_ind = []
         for i_batch in range(len(xy_ind)): # len(xy_ind) = 1
             cat_pt_ind.append(F.pad(xy_ind[i_batch], (1, 0), 'constant', value=i_batch))
-        print(cat_pt_ind[0].shape)
-        cat_pt_fea = torch.cat(pt_fea, dim=0)
+        # print(cat_pt_ind[0].shape)
         cat_pt_ind = torch.cat(cat_pt_ind, dim=0)
         pt_num = cat_pt_ind.shape[0]
+        
+        cat_pt_fea = torch.cat(pt_fea, dim=0)
+        # Point - Image Fusion
+        img_fea_dim = 3
+        cat_img_fea = torch.zeros(pt_num, img_fea_dim).to(cur_dev)
+        cat_fused_fea = torch.cat((cat_pt_fea, cat_img_fea), dim=1)
 
         # shuffle the data
         shuffled_ind = torch.randperm(pt_num, device=cur_dev)
         
-        cat_pt_fea = cat_pt_fea[shuffled_ind, :]
+        # cat_pt_fea = cat_pt_fea[shuffled_ind, :]
+        cat_fused_fea = cat_fused_fea[shuffled_ind, :]
         cat_pt_ind = cat_pt_ind[shuffled_ind, :]
 
         # unique xy grid index
         unq, unq_inv, unq_cnt = torch.unique(cat_pt_ind, return_inverse=True, return_counts=True, dim=0)
         unq = unq.type(torch.int64)
-
+ 
         # process feature
-        processed_cat_pt_fea = self.PPmodel(cat_pt_fea)
-        pooled_data = torch_scatter.scatter_max(processed_cat_pt_fea, unq_inv, dim=0)[0]
+        # processed_cat_pt_fea = self.PPmodel(cat_pt_fea)
+        processed_cat_fused_fea = self.PPmodel(cat_fused_fea)
+        # pooled_data = torch_scatter.scatter_max(processed_cat_pt_fea, unq_inv, dim=0)[0]
+        pooled_data = torch_scatter.scatter_max(processed_cat_fused_fea, unq_inv, dim=0)[0]
 
         if self.fea_compre:
             processed_pooled_data = self.fea_compression(pooled_data)

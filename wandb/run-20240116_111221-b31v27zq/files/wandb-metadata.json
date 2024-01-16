@@ -1,0 +1,252 @@
+{
+    "os": "Linux-5.4.0-99-generic-x86_64-with-glibc2.31",
+    "python": "3.10.13",
+    "heartbeatAt": "2024-01-16T11:12:22.567968",
+    "startedAt": "2024-01-16T11:12:21.840301",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/jovyan/aiclops_main/Cylinder3D/train_cylinder_asym.py",
+    "codePathLocal": "train_cylinder_asym.py",
+    "codePath": "train_cylinder_asym.py",
+    "git": {
+        "remote": "https://github.com/YEOMJINSEOP/LCF3D.git",
+        "commit": "3cda1f44c0b2ca6418cfe5706941bace5b72f686"
+    },
+    "email": "yeomjinseop@gmail.com",
+    "root": "/home/jovyan/aiclops_main/Cylinder3D",
+    "host": "cheetah-6169636c6f7073-md8wey-5f96879d74-lm997",
+    "username": "jovyan",
+    "executable": "/home/jovyan/.conda/envs/cylinder3D/bin/python",
+    "cpu_count": 20,
+    "cpu_count_logical": 40,
+    "cpu_freq": {
+        "current": 1004.8067250000001,
+        "min": 1000.0,
+        "max": 3200.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1000.043,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1069.604,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.441,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.686,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.673,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.668,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.663,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.975,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.317,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.828,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.705,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.484,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.186,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.586,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.625,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.001,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.05,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1001.064,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1001.857,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.369,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.42,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1069.138,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.231,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.171,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.272,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.439,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.663,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.972,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.096,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.203,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.475,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.347,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.656,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.575,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.57,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.139,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.944,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.518,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.145,
+            "min": 1000.0,
+            "max": 3200.0
+        },
+        {
+            "current": 1000.806,
+            "min": 1000.0,
+            "max": 3200.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 438.09971618652344,
+            "used": 331.19992446899414
+        }
+    },
+    "gpu": "NVIDIA RTX A5000",
+    "gpu_count": 2,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX A5000",
+            "memory_total": 25434652672
+        },
+        {
+            "name": "NVIDIA RTX A5000",
+            "memory_total": 25434652672
+        }
+    ],
+    "memory": {
+        "total": 251.5292205810547
+    }
+}

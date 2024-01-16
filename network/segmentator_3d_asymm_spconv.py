@@ -319,4 +319,4 @@ class Asymm_3d_spconv(nn.Module):
 
         logits = self.logits(up0e)
         y = logits.dense() # logits: torch.Size([1, 20, 480, 360, 32])
-        return y
+        return y 

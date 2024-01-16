@@ -55,7 +55,6 @@ class cylinder_fea(nn.Module):
             self.pt_fea_dim = self.pool_dim
 
     def forward(self, pt_fea, xy_ind, img_fea=None):
-        print(f'\n len(pt_fea): {len(pt_fea)}\n')
         # pt_fea[0]: [num pts, 9]
         # xy_ind[0]: [num pts, 3]
         cur_dev = pt_fea[0].get_device() 

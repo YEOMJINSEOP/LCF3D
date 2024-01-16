@@ -44,3 +44,4 @@ class cylinder_asym(nn.Module):
         spatial_features = self.cylinder_3d_spconv_seg(features_3d, coords, batch_size)
 
         return spatial_features
+  

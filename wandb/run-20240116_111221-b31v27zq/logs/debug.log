@@ -1,0 +1,26 @@
+2024-01-16 11:12:21,848 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Current SDK version is 0.16.2
+2024-01-16 11:12:21,848 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Configure stats pid to 254458
+2024-01-16 11:12:21,848 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Loading settings from /home/jovyan/.config/wandb/settings
+2024-01-16 11:12:21,848 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Loading settings from /home/jovyan/aiclops_main/Cylinder3D/wandb/settings
+2024-01-16 11:12:21,848 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'train_cylinder_asym.py', 'program_abspath': '/home/jovyan/aiclops_main/Cylinder3D/train_cylinder_asym.py', 'program': '/home/jovyan/aiclops_main/Cylinder3D/train_cylinder_asym.py'}
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_init.py:_log_setup():526] Logging user logs to /home/jovyan/aiclops_main/Cylinder3D/wandb/run-20240116_111221-b31v27zq/logs/debug.log
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_init.py:_log_setup():527] Logging internal logs to /home/jovyan/aiclops_main/Cylinder3D/wandb/run-20240116_111221-b31v27zq/logs/debug-internal.log
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_init.py:init():566] calling init triggers
+2024-01-16 11:12:21,849 INFO    MainThread:254458 [wandb_init.py:init():573] wandb.init called with sweep_config: {}
+config: {}
+2024-01-16 11:12:21,850 INFO    MainThread:254458 [wandb_init.py:init():616] starting backend
+2024-01-16 11:12:21,850 INFO    MainThread:254458 [wandb_init.py:init():620] setting up manager
+2024-01-16 11:12:21,851 INFO    MainThread:254458 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-01-16 11:12:21,855 INFO    MainThread:254458 [wandb_init.py:init():628] backend started and connected
+2024-01-16 11:12:21,859 INFO    MainThread:254458 [wandb_init.py:init():720] updated telemetry
+2024-01-16 11:12:21,868 INFO    MainThread:254458 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-01-16 11:12:22,414 INFO    MainThread:254458 [wandb_run.py:_on_init():2254] communicating current version
+2024-01-16 11:12:22,487 INFO    MainThread:254458 [wandb_run.py:_on_init():2263] got version response 
+2024-01-16 11:12:22,487 INFO    MainThread:254458 [wandb_init.py:init():804] starting run threads in backend
+2024-01-16 11:12:26,304 INFO    MainThread:254458 [wandb_run.py:_console_start():2233] atexit reg
+2024-01-16 11:12:26,305 INFO    MainThread:254458 [wandb_run.py:_redirect():2088] redirect: wrap_raw
+2024-01-16 11:12:26,305 INFO    MainThread:254458 [wandb_run.py:_redirect():2153] Wrapping output streams.
+2024-01-16 11:12:26,305 INFO    MainThread:254458 [wandb_run.py:_redirect():2178] Redirects installed.
+2024-01-16 11:12:26,306 INFO    MainThread:254458 [wandb_init.py:init():847] run started, returning control to user process

@@ -49,23 +49,26 @@ class cylinder_fea(nn.Module):
                 nn.Linear(self.pool_dim, self.fea_compre),
                 nn.ReLU())
             self.pt_fea_dim = self.fea_compre
-        else:
+        else: # fea_compre = num_input_features = 16
             self.pt_fea_dim = self.pool_dim
 
     def forward(self, pt_fea, xy_ind):
-        cur_dev = pt_fea[0].get_device()
+        # pt_fea[0]: [num pts, 9]
+        # xy_ind[0]: [num pts, 3]
+        cur_dev = pt_fea[0].get_device() 
 
         # concate everything
         cat_pt_ind = []
-        for i_batch in range(len(xy_ind)):
+        for i_batch in range(len(xy_ind)): # len(xy_ind) = 1
             cat_pt_ind.append(F.pad(xy_ind[i_batch], (1, 0), 'constant', value=i_batch))
-
+        print(cat_pt_ind[0].shape)
         cat_pt_fea = torch.cat(pt_fea, dim=0)
         cat_pt_ind = torch.cat(cat_pt_ind, dim=0)
         pt_num = cat_pt_ind.shape[0]
 
         # shuffle the data
         shuffled_ind = torch.randperm(pt_num, device=cur_dev)
+        
         cat_pt_fea = cat_pt_fea[shuffled_ind, :]
         cat_pt_ind = cat_pt_ind[shuffled_ind, :]
 

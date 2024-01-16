@@ -190,10 +190,12 @@ class cylinder_dataset(data.Dataset):
     def __getitem__(self, index):
         'Generates one sample of data'
         data = self.point_cloud_dataset[index]
-        if len(data) == 2:
-            xyz, labels = data
-        elif len(data) == 3:
-            xyz, labels, sig = data
+        
+        # if len(data) == 2:
+        if len(data) == 3:    
+            xyz, labels, corresponding_img = data
+        elif len(data) == 4:
+            xyz, labels, corresponding_img, sig = data
             if len(sig.shape) == 2: sig = np.squeeze(sig)
         else:
             raise Exception('Return invalid data tuple')
@@ -256,16 +258,17 @@ class cylinder_dataset(data.Dataset):
         label_voxel_pair = np.concatenate([grid_ind, labels], axis=1)
         label_voxel_pair = label_voxel_pair[np.lexsort((grid_ind[:, 0], grid_ind[:, 1], grid_ind[:, 2])), :]
         processed_label = nb_process_label(np.copy(processed_label), label_voxel_pair)
-        data_tuple = (voxel_position, processed_label)
+        # data_tuple = (voxel_position, processed_label)#@@@@@
+        data_tuple = (corresponding_img, processed_label)
 
         # center data on each voxel for PTnet
         voxel_centers = (grid_ind.astype(np.float32) + 0.5) * intervals + min_bound
         return_xyz = xyz_pol - voxel_centers
         return_xyz = np.concatenate((return_xyz, xyz_pol, xyz[:, :2]), axis=1)
 
-        if len(data) == 2:
+        if len(data) == 3:
             return_fea = return_xyz
-        elif len(data) == 3:
+        elif len(data) == 4:
             return_fea = np.concatenate((return_xyz, sig[..., np.newaxis]), axis=1)
 
         if self.return_test:

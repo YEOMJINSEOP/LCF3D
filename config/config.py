@@ -35,7 +35,7 @@ dataset_params = Map(
 train_data_loader = Map(
     {
         "data_path": Str(),
-        "imageset": Str(),
+        "split": Str(),
         "return_ref": Bool(),
         "batch_size": Int(),
         "shuffle": Bool(),
@@ -46,7 +46,7 @@ train_data_loader = Map(
 val_data_loader = Map(
     {
         "data_path": Str(),
-        "imageset": Str(),
+        "split": Str(),
         "return_ref": Bool(),
         "batch_size": Int(),
         "shuffle": Bool(),

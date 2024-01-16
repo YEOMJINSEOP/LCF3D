@@ -7,6 +7,8 @@ import numpy as np
 from torch.utils import data
 import yaml
 import pickle
+from torchvision.transforms import transforms
+from PIL import Image
 
 REGISTERED_PC_DATASET_CLASSES = {}
 
@@ -62,43 +64,99 @@ class SemKITTI_demo(data.Dataset):
 
 @register_dataset
 class SemKITTI_sk(data.Dataset):
-    def __init__(self, data_path, imageset='train',
+    def __init__(self, data_path, split='train',
                  return_ref=False, label_mapping="semantic-kitti.yaml", nusc=None):
         self.return_ref = return_ref
         with open(label_mapping, 'r') as stream:
             semkittiyaml = yaml.safe_load(stream)
         self.learning_map = semkittiyaml['learning_map']
-        self.imageset = imageset
-        if imageset == 'train':
-            split = semkittiyaml['split']['train']
-        elif imageset == 'val':
-            split = semkittiyaml['split']['valid']
-        elif imageset == 'test':
-            split = semkittiyaml['split']['test']
+           
+        self.root = data_path
+        self.labels_mapping = semkittiyaml['learning_map']
+        self.pix_fusion = True
+
+        self.split = split
+
+        if self.split == 'train':
+#            self.seqs = ['00', '01', '02', '03', '04', '05', '06', '07', '09', '10']
+             self.seqs = ['01']
+        elif self.split == 'val':
+#            self.seqs = ['08']
+             self.seqs = ['01']    
+        elif self.split == 'test':
+#             self.seqs = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
+              self.seqs = ['01']  
         else:
-            raise Exception('Split must be train/val/test')
+            raise Exception('Split must be train/val/test')    
+        
+        self.P_dict = {}
+        self.Tr_dict = {}
+        for seq in self.seqs:
+            with open(os.path.join(self.root, seq, 'calib.txt'), 'r') as calib:
+                P = []
+                for idx in range(4):
+                    line = calib.readline().rstrip('\n')[4:]
+                    data = line.split(" ")
+                    # print('line', line)
+                    # print('data', data)
+                    P.append(np.array(data, dtype=np.float32).reshape(3, -1))
+                self.P_dict[seq + "_left"] = P[2]
+                self.P_dict[seq + "_right"] = P[3]
+                # line = calib.readline().rstrip('\n')[4:]
+                # data = line.split(" ")                
+                # self.Tr_dict[seq] = np.array(data, dtype=np.float32).reshape((3, -1))
+                                    
+        self.pcd_files = []
+        self.img_files = [[], []]
+        # self.tokens = [] # token = seq + pcd_name
+        # self.map_idx2seq = []
+        for seq in self.seqs:
+            for pcd_name in sorted(os.listdir(os.path.join(self.root, seq, 'velodyne'))):
+                # self.tokens.append(str(seq) + '_' + str(pcd_name[:-4]))
+                self.pcd_files.append(os.path.join(self.root, seq, 'velodyne', str(pcd_name)))
+                self.img_files[0].append(os.path.join(self.root, seq, 'image_2', str(pcd_name[:-4]) + '.png'))
+                # self.img_files[1].append(os.path.join(self.root, seq, 'image_3', str(pcd_name[:-4]) + '.png'))
+                # self.map_idx2seq.append(seq)
 
-        self.im_idx = []
-        for i_folder in split:
-            self.im_idx += absoluteFilePaths('/'.join([data_path, str(i_folder).zfill(2), 'velodyne']))
-
+        self.IMAGE_SIZE = [360, 640]
+        self.resize = transforms.Compose([
+            transforms.Resize(size=self.IMAGE_SIZE)
+        ])
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225] ),
+        ])
+        self.mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])        
+        
+        
+        
     def __len__(self):
         'Denotes the total number of samples'
-        return len(self.im_idx)
+        return len(self.pcd_files)
 
     def __getitem__(self, index):
-        raw_data = np.fromfile(self.im_idx[index], dtype=np.float32).reshape((-1, 4))
-        if self.imageset == 'test':
+        # print("img_file: ", self.img_files[0][index])        
+        # print("pcd_file: ", self.pcd_files[index])
+        raw_data = np.fromfile(self.pcd_files[index], dtype=np.float32).reshape((-1, 4))
+        # print('raw_data.shape', raw_data.shape)
+        if self.split == 'test':
             annotated_data = np.expand_dims(np.zeros_like(raw_data[:, 0], dtype=int), axis=1)
         else:
-            annotated_data = np.fromfile(self.im_idx[index].replace('velodyne', 'labels')[:-3] + 'label',
+            annotated_data = np.fromfile(self.pcd_files[index].replace('velodyne', 'labels')[:-3] + 'label',
                                          dtype=np.uint32).reshape((-1, 1))
+            # print('annotated_data.shape', annotated_data.shape)
             annotated_data = annotated_data & 0xFFFF  # delete high 16 digits binary
-            annotated_data = np.vectorize(self.learning_map.__getitem__)(annotated_data)
+            annotated_data = np.vectorize(self.learning_map.__getitem__)(annotated_data)                        
 
-        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8))
+        corresponding_img = Image.open(self.img_files[0][index]).convert('RGB')
+        corresponding_img = self.resize(corresponding_img)
+        corresponding_img = self.transform(corresponding_img).permute((1,2,0))        
+        # print('corresponding_img shape:', corresponding_img.shape)
+
+        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8), corresponding_img)
         if self.return_ref:
             data_tuple += (raw_data[:, 3],)
+        
         return data_tuple
 
 

@@ -3,3 +3,4 @@
 .DS_Store
 
 model_save_dir/
+wandb/

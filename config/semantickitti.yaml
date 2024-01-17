@@ -42,18 +42,18 @@ dataset_params:
 ###################
 ## Data_loader options
 train_data_loader:
-  data_path: "../dataset/sequences"
+  data_path: "/home/poscoict/Desktop/lcps_semKITTI/dataset/sequences"
   split: "train"
   return_ref: True
-  batch_size: 2
+  batch_size: 5
   shuffle: True
   num_workers: 4
 
 val_data_loader:
-  data_path: "../dataset/sequences"
+  data_path: "/home/poscoict/Desktop/lcps_semKITTI/dataset/sequences"
   split: "val"
   return_ref: True
-  batch_size: 2
+  batch_size: 5
   shuffle: False
   num_workers: 4
 

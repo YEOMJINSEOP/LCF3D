@@ -131,15 +131,15 @@ class SemKITTI_sk(data.Dataset):
         return len(self.pcd_files)
 
     def __getitem__(self, index):
-        # print("img_file: ", self.img_files[0][index])        
-        # print("pcd_file: ", self.pcd_files[index])
-        raw_data = np.fromfile(self.pcd_files[index], dtype=np.float32).reshape((-1, 4))
-        # print('raw_data.shape', raw_data.shape)
+
+#        raw_data = np.fromfile(self.pcd_files[index], dtype=np.float32).reshape((-1, 4))
+        raw_data = np.load(self.pcd_files[index], allow_pickle=True).reshape((-1, 4))    
         if self.split == 'test':
             annotated_data = np.expand_dims(np.zeros_like(raw_data[:, 0], dtype=int), axis=1)
         else:
-            annotated_data = np.fromfile(self.pcd_files[index].replace('velodyne', 'labels')[:-3] + 'label',
-                                         dtype=np.uint32).reshape((-1, 1))
+            # annotated_data = np.fromfile(self.pcd_files[index].replace('velodyne', 'labels')[:-3] + 'label',
+            #                              dtype=np.uint32).reshape((-1, 1))
+            annotated_data = np.load(self.pcd_files[index].replace('velodyne', 'labels')[:-3] + 'npy', allow_pickle=True).reshape((-1, 1))
             # print('annotated_data.shape', annotated_data.shape)
             annotated_data = annotated_data & 0xFFFF  # delete high 16 digits binary
             annotated_data = np.vectorize(self.learning_map.__getitem__)(annotated_data)                        

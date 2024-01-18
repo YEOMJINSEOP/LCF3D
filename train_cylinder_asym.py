@@ -68,7 +68,7 @@ def main(args):
                                                                   val_dataloader_config,
                                                                   grid_size=grid_size)
     
-    wandb.init(project="cylinder3d_dummy_img_fea")
+    wandb.init(project="cylinder3d_dummy_img_fea(sub_data)")
     wandb.config = {
         "learning_rate": train_hypers["learning_rate"],
         "epochs": train_hypers["max_num_epochs"],

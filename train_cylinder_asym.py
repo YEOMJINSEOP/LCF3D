@@ -89,13 +89,14 @@ def main(args):
         pbar = tqdm(total=len(train_dataset_loader))
         time.sleep(10)
         # lr_scheduler.step(epoch)
-        for i_iter, (corresponding_img, train_vox_label, train_grid, _, train_pt_fea) in enumerate(train_dataset_loader):
+        for i_iter, (_1, train_vox_label, train_grid, _2, train_pt_fea, train_img_fea) in enumerate(train_dataset_loader):
+
             if global_iter % check_iter == 0 and epoch >= 1:
                 my_model.eval()
                 hist_list = []
                 val_loss_list = []
                 with torch.no_grad():
-                    for i_iter_val, (corresponding_img, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
+                    for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea, val_img_fea) in enumerate(
                             val_dataset_loader):
 
                         val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
@@ -103,7 +104,11 @@ def main(args):
                         val_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in val_grid]
                         val_label_tensor = val_vox_label.type(torch.LongTensor).to(pytorch_device)
                         val_batch_size = val_vox_label.shape[0]
-                        predict_labels = my_model(val_pt_fea_ten, val_grid_ten, val_batch_size)
+                                                
+                        val_img_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in 
+                                           val_img_fea]                        
+                        predict_labels = my_model(val_pt_fea_ten, val_img_fea_ten, val_grid_ten, val_batch_size)
+                        
                         # aux_loss = loss_fun(aux_outputs, point_label_tensor)
                         loss = lovasz_softmax(torch.nn.functional.softmax(predict_labels).detach(), val_label_tensor,
                                               ignore=0) + loss_func(predict_labels.detach(), val_label_tensor)
@@ -115,7 +120,7 @@ def main(args):
                                                                 val_grid[count][:, 2]], val_pt_labs[count],
                                                             unique_label))
                         val_loss_list.append(loss.detach().cpu().numpy())
-                        wandb.log({"val_loss": loss.item()}, step=epoch)
+                        
                 my_model.train()
                 iou = per_class_iu(sum(hist_list))
                 print('Validation per class iou: ')
@@ -138,15 +143,17 @@ def main(args):
             # train_grid_ten = [torch.from_numpy(i[:,:2]).to(pytorch_device) for i in train_grid]
             train_vox_ten = [torch.from_numpy(i).to(pytorch_device) for i in train_grid]
             point_label_tensor = train_vox_label.type(torch.LongTensor).to(pytorch_device)
-            train_batch_size = train_vox_label.shape[0]
+            train_batch_size = train_vox_label.shape[0]      
+            train_img_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in 
+                                           train_img_fea]    
+                        
             # forward + backward + optimize
-            outputs = my_model(train_pt_fea_ten, train_vox_ten, train_batch_size)
+            outputs = my_model(train_pt_fea_ten, train_img_fea_ten, train_vox_ten, train_batch_size)
             loss = lovasz_softmax(torch.nn.functional.softmax(outputs), point_label_tensor, ignore=0) + loss_func(
                 outputs, point_label_tensor)
             loss.backward()
             optimizer.step()
             loss_list.append(loss.item())
-            wandb.log({"train_loss": loss.item()}, step=epoch)
             
 
             if global_iter % 1000 == 0:

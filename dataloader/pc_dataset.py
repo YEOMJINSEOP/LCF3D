@@ -3,6 +3,7 @@
 # @file: pc_dataset.py 
 
 import os
+import torch
 import numpy as np
 from torch.utils import data
 import yaml
@@ -78,14 +79,12 @@ class SemKITTI_sk(data.Dataset):
         self.split = split
 
         if self.split == 'train':
-#            self.seqs = ['00', '01', '02', '03', '04', '05', '06', '07', '09', '10']
-             self.seqs = ['01']
+            # self.seqs = ['00', '01', '02', '03', '04', '05', '06', '07', '09', '10']
+            self.seqs = ['01', '03', '04', '05', '06', '07', '09', '10']
         elif self.split == 'val':
-#            self.seqs = ['08']
-             self.seqs = ['01']    
+            self.seqs = ['08']
         elif self.split == 'test':
-#             self.seqs = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
-              self.seqs = ['01']  
+            self.seqs = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
         else:
             raise Exception('Split must be train/val/test')    
         
@@ -97,26 +96,23 @@ class SemKITTI_sk(data.Dataset):
                 for idx in range(4):
                     line = calib.readline().rstrip('\n')[4:]
                     data = line.split(" ")
-                    # print('line', line)
-                    # print('data', data)
                     P.append(np.array(data, dtype=np.float32).reshape(3, -1))
                 self.P_dict[seq + "_left"] = P[2]
                 self.P_dict[seq + "_right"] = P[3]
-                # line = calib.readline().rstrip('\n')[4:]
-                # data = line.split(" ")                
-                # self.Tr_dict[seq] = np.array(data, dtype=np.float32).reshape((3, -1))
                                     
         self.pcd_files = []
         self.img_files = [[], []]
-        # self.tokens = [] # token = seq + pcd_name
-        # self.map_idx2seq = []
+
+        # !!! img_fea
+        self.img_fea_files = [[], []]
+        
         for seq in self.seqs:
             for pcd_name in sorted(os.listdir(os.path.join(self.root, seq, 'velodyne'))):
-                # self.tokens.append(str(seq) + '_' + str(pcd_name[:-4]))
                 self.pcd_files.append(os.path.join(self.root, seq, 'velodyne', str(pcd_name)))
                 self.img_files[0].append(os.path.join(self.root, seq, 'image_2', str(pcd_name[:-4]) + '.png'))
-                # self.img_files[1].append(os.path.join(self.root, seq, 'image_3', str(pcd_name[:-4]) + '.png'))
-                # self.map_idx2seq.append(seq)
+                # !!! img_fea
+                # self.img_fea_files[0].append(os.path.join(self.root, seq, 'img_fea', str(pcd_name[:-4]) + '.npy'))
+
 
         self.IMAGE_SIZE = [360, 640]
         self.resize = transforms.Compose([
@@ -148,12 +144,20 @@ class SemKITTI_sk(data.Dataset):
             annotated_data = annotated_data & 0xFFFF  # delete high 16 digits binary
             annotated_data = np.vectorize(self.learning_map.__getitem__)(annotated_data)                        
 
-        corresponding_img = Image.open(self.img_files[0][index]).convert('RGB')
-        corresponding_img = self.resize(corresponding_img)
-        corresponding_img = self.transform(corresponding_img).permute((1,2,0))        
+        # corresponding_img = Image.open(self.img_files[0][index]).convert('RGB')
+        # corresponding_img = self.resize(corresponding_img)
+        # corresponding_img = self.transform(corresponding_img).permute((1,2,0))        
         # print('corresponding_img shape:', corresponding_img.shape)
+        
+        # img_fea_np = np.load(self.img_fea_files[0][index])
+        # img_fea_np = np.zeros((raw_data.shape[0], 3))
+        img_fea_np = np.zeros((raw_data.shape[0], 3))
+        # print(f'\n raw_data[:, :3]: {raw_data[:, :3].shape} \n')
+        # print(f'\n annotated_data.astype(np.uint8): {annotated_data.astype(np.uint8).shape} \n')        
+        # print(f'\n img_fea_np: {img_fea_np.shape} \n')
 
-        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8), corresponding_img)
+
+        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8), img_fea_np)
         if self.return_ref:
             data_tuple += (raw_data[:, 3],)
         

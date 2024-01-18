@@ -193,9 +193,9 @@ class cylinder_dataset(data.Dataset):
         
         # if len(data) == 2:
         if len(data) == 3:    
-            xyz, labels, corresponding_img = data
+            xyz, labels, img_fea = data
         elif len(data) == 4:
-            xyz, labels, corresponding_img, sig = data
+            xyz, labels, img_fea, sig = data
             if len(sig.shape) == 2: sig = np.squeeze(sig)
         else:
             raise Exception('Return invalid data tuple')
@@ -258,9 +258,8 @@ class cylinder_dataset(data.Dataset):
         label_voxel_pair = np.concatenate([grid_ind, labels], axis=1)
         label_voxel_pair = label_voxel_pair[np.lexsort((grid_ind[:, 0], grid_ind[:, 1], grid_ind[:, 2])), :]
         processed_label = nb_process_label(np.copy(processed_label), label_voxel_pair)
-        # data_tuple = (voxel_position, processed_label)#
-        data_tuple = (corresponding_img, processed_label)
-
+        data_tuple = (voxel_position, processed_label)
+        
         # center data on each voxel for PTnet
         voxel_centers = (grid_ind.astype(np.float32) + 0.5) * intervals + min_bound
         return_xyz = xyz_pol - voxel_centers
@@ -272,9 +271,10 @@ class cylinder_dataset(data.Dataset):
             return_fea = np.concatenate((return_xyz, sig[..., np.newaxis]), axis=1)
 
         if self.return_test:
-            data_tuple += (grid_ind, labels, return_fea, index)
+            data_tuple += (grid_ind, labels, return_fea, img_fea, index)
         else:
-            data_tuple += (grid_ind, labels, return_fea)
+            data_tuple += (grid_ind, labels, return_fea, img_fea)
+
         return data_tuple
 
 
@@ -402,7 +402,8 @@ def collate_fn_BEV(data):
     grid_ind_stack = [d[2] for d in data]
     point_label = [d[3] for d in data]
     xyz = [d[4] for d in data]
-    return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz
+    img_fea = [d[5] for d in data]
+    return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz, img_fea
 
 
 def collate_fn_BEV_test(data):
@@ -411,5 +412,6 @@ def collate_fn_BEV_test(data):
     grid_ind_stack = [d[2] for d in data]
     point_label = [d[3] for d in data]
     xyz = [d[4] for d in data]
-    index = [d[5] for d in data]
+    img_fea = [d[5] for d in data]    
+    index = [d[6] for d in data]
     return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz, index

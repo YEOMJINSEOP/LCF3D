@@ -4,3 +4,4 @@
 
 model_save_dir/
 wandb/
+logs_dir/

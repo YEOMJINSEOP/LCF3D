@@ -1,25 +1,7 @@
 
-# Cylindrical and Asymmetrical 3D Convolution Networks for LiDAR Segmentation
+# LCF3D
 
- The source code of our work **"Cylindrical and Asymmetrical 3D Convolution Networks for LiDAR Segmentation**
-![img|center](./img/pipeline.png)
-
-## News
-- **2022-06 [NEW:fire:]** **PVKD (CVPR2022)**, a lightweight Cylinder3D model with much higher performance has been released [here](https://github.com/cardwing/Codes-for-PVKD)
--  Cylinder3D is accepted to CVPR 2021 as an **Oral** presentation
--  Cylinder3D achieves the **1st place** in the leaderboard of SemanticKITTI **multiscan** semantic segmentation
-<p align="center">
-   <img src="./img/leaderboard2.png" width="30%"> 
-</p>
-
-- Cylinder3D achieves the 2nd place in the challenge of nuScenes LiDAR segmentation, with mIoU=0.779, fwIoU=0.899 and FPS=10Hz.
-- **2020-12** We release the new version of Cylinder3D with nuScenes dataset support.
-- **2020-11** We preliminarily release the Cylinder3D--v0.1, supporting the LiDAR semantic segmentation on SemanticKITTI and nuScenes.
-- **2020-11** Our work achieves the **1st place** in the leaderboard of SemanticKITTI semantic segmentation (until CVPR2021 DDL, still rank 1st in term of Accuracy now), and based on the proposed method, we also achieve the **1st place** in the leaderboard of SemanticKITTI panoptic segmentation.
-
-<p align="center">
-   <img src="./img/leaderboard.png" width="40%"> 
-</p>
+ The source code of our work is based on **Cylinder3D** from "Cylindrical and Asymmetrical 3D Convolution Networks for LiDAR Segmentation"
 
 ## Installation
 
@@ -90,31 +72,6 @@ If you want to validate with your own datasets, you need to provide labels.
 ```
 python demo_folder.py --demo-folder YOUR_FOLDER --save-folder YOUR_SAVE_FOLDER --demo-label-folder YOUR_LABEL_FOLDER
 ```
-
-## TODO List
-- [x] Release pretrained model for nuScenes.
-- [x] Support multiscan semantic segmentation.
-- [ ] Support more models, including PolarNet, RandLA, SequeezeV3 and etc.
-- [ ] Integrate LiDAR Panotic Segmentation into the codebase.
-
-## Reference
-
-If you find our work useful in your research, please consider citing our [paper](https://arxiv.org/pdf/2011.10033):
-```
-@article{zhu2020cylindrical,
-  title={Cylindrical and Asymmetrical 3D Convolution Networks for LiDAR Segmentation},
-  author={Zhu, Xinge and Zhou, Hui and Wang, Tai and Hong, Fangzhou and Ma, Yuexin and Li, Wei and Li, Hongsheng and Lin, Dahua},
-  journal={arXiv preprint arXiv:2011.10033},
-  year={2020}
-}
-
-#for LiDAR panoptic segmentation
-@article{hong2020lidar,
-  title={LiDAR-based Panoptic Segmentation via Dynamic Shifting Network},
-  author={Hong, Fangzhou and Zhou, Hui and Zhu, Xinge and Li, Hongsheng and Liu, Ziwei},
-  journal={arXiv preprint arXiv:2011.11964},
-  year={2020}
-}
 ```
 
 ## Acknowledgments

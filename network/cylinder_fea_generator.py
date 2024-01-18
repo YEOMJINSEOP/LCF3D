@@ -54,7 +54,7 @@ class cylinder_fea(nn.Module):
         else: # fea_compre = num_input_features = 16
             self.pt_fea_dim = self.pool_dim
 
-    def forward(self, pt_fea, xy_ind, img_fea=None):
+    def forward(self, pt_fea, img_fea, xy_ind):
         # pt_fea[0]: [num pts, 9]
         # xy_ind[0]: [num pts, 3]
         cur_dev = pt_fea[0].get_device() 
@@ -67,10 +67,9 @@ class cylinder_fea(nn.Module):
         cat_pt_ind = torch.cat(cat_pt_ind, dim=0)
         pt_num = cat_pt_ind.shape[0]
         
+        # Point - Image Fusion        
         cat_pt_fea = torch.cat(pt_fea, dim=0)
-        # Point - Image Fusion
-        img_fea_dim = 3
-        cat_img_fea = torch.zeros(pt_num, img_fea_dim).to(cur_dev)
+        cat_img_fea = torch.cat(img_fea, dim=0)
         cat_fused_fea = torch.cat((cat_pt_fea, cat_img_fea), dim=1)
 
         # shuffle the data

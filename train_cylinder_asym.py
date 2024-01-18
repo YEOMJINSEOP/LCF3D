@@ -54,7 +54,6 @@ def main(args):
     unique_label_str = [SemKITTI_label_name[x] for x in unique_label + 1]
 
     my_model = model_builder.build(model_config)
-    my_model = nn.DataParallel(my_model)
     if os.path.exists(model_load_path):
         my_model = load_checkpoint(model_load_path, my_model)
 
@@ -69,7 +68,7 @@ def main(args):
                                                                   val_dataloader_config,
                                                                   grid_size=grid_size)
     
-    wandb.init(project="cylinder3d_vanila")
+    wandb.init(project="cylinder3d_dummy_img_fea")
     wandb.config = {
         "learning_rate": train_hypers["learning_rate"],
         "epochs": train_hypers["max_num_epochs"],
@@ -126,7 +125,9 @@ def main(args):
                 print('Validation per class iou: ')
                 for class_name, class_iou in zip(unique_label_str, iou):
                     print('%s : %.2f%%' % (class_name, class_iou * 100))
+                    wandb.log({f'Val_IoU/{class_name}': class_iou * 100}, step=global_iter)
                 val_miou = np.nanmean(iou) * 100
+                wandb.log({'Val_mIoU': val_miou}, step=global_iter)
                 del val_vox_label, val_grid, val_pt_fea, val_grid_ten
 
                 # save model if performance is improved
@@ -155,11 +156,13 @@ def main(args):
             optimizer.step()
             loss_list.append(loss.item())
             
+            wandb.log({'Train_loss': np.mean(loss_list)}, step=global_iter)
 
             if global_iter % 1000 == 0:
                 if len(loss_list) > 0:
                     print('epoch %d iter %5d, loss: %.3f\n' %
                           (epoch, i_iter, np.mean(loss_list)))
+                    wandb.log({"Training Loss": {loss.item()}, "Epoch": epoch})
                 else:
                     print('loss error')
 
